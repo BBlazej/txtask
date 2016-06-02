@@ -18,6 +18,7 @@ class Consumer(object):
 	def __init__(self, queue):
         	self.queue = queue
 	def __call__(self):
+		threadLock.acquire()
 		empty = False
 		while not empty:
 			try:
@@ -29,9 +30,12 @@ class Consumer(object):
 						
 			except Queue.Empty:
 				empty = True
-
+		threadLock.release()
 
 if __name__ == '__main__':
+
+    threadLock = threading.Lock()
+
     urls = ['http://www.yahoo.com', 'http://manadartblog.tumblr.com']
     queue = Queue.Queue()
 
@@ -40,8 +44,12 @@ if __name__ == '__main__':
   
     con = Consumer(queue)
     cthread = threading.Thread(target=con)
+	cthread2 = threading.Thread(target=con)
 
     pthread.start()
     cthread.start()
+	cthread2.start()
+	
     pthread.join()
     cthread.join()
+	cthread2.join()
