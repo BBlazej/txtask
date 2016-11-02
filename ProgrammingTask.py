@@ -10,7 +10,7 @@ class Producer(object):
         	self.queue = queue
 
 	def __call__(self, urls):
-    	for url in urls:
+    	     for url in urls:
        		page = requests.get(url)
          	queue.put(page.text)
              
